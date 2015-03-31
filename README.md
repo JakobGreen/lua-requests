@@ -8,4 +8,4 @@ Under construction... Stay tuned.
 Licensing
 ====
 
-`lua-requests' is licensed under the MIT license. See LICENSE.md for details on the MIT license.
+`lua-requests` is licensed under the MIT license. See LICENSE.md for details on the MIT license.
