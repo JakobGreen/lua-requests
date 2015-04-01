@@ -1,6 +1,7 @@
 -- Lua Requests library for http ease
 
 local http_socket = require('socket.http')
+local url_parser = require('socket.url')
 local ltn12 = require('ltn12')
 
 --TODO: Remove
@@ -95,8 +96,10 @@ local function digest_auth_header(request)
   request.auth.nc_count = request.auth.nc_count + 1
 
   request.auth.nc = string.format("%08x", request.auth.nc_count)
-  request.auth.uri = '/digest-auth/auth/user/passwd'
-  request.auth.method = 'GET'
+
+  local url = url_parser.parse(request.url)
+  request.auth.uri = url_parser.build{path = url.path, query = url.query}
+  request.auth.method = request.method
   request.auth.qop = 'auth'
 
   request.auth.response = digest_hash_response(request.auth)
@@ -118,21 +121,49 @@ end
 function requests.create_header(request)
   request.headers = request.headers or {}
   request.headers['Content-Length'] = request.data:len()
+
+  if request.cookies then
+    if request.headers.cookie then
+      request.headers.cookie = request.headers.cookie..'; '..request.cookies
+    else
+      request.headers.cookie = request.cookies
+    end
+  end
   
   if request.auth then
     requests.add_auth_headers(request)
   end
 end
 
-function requests.parse_digest_response_header(header, method, request)
+-- TODO: Rename this
+function use_digest(response, request)
+  if response.status_code == 401 then
+    parse_digest_response_header(response,request)
+    requests.create_header(request)
+    response = make_request(request)
+    response.auth = request.auth
+    response.cookies = request.headers.cookie
+    return response
+  else
+    response.auth = request.auth
+    response.cookies = request.headers.cookie
+    return response 
+  end
+end
 
-  for key, value in header['www-authenticate']:gmatch('(%w+)="(%S+)"') do
+function parse_digest_response_header(response, request)
+
+  for key, value in response.headers['www-authenticate']:gmatch('(%w+)="(%S+)"') do
     request.auth[key] = value
   end
 
-  request.headers.cookie = "fake=fake_value"
+  if request.headers.cookie then
+    request.headers.cookie = request.headers.cookie..'; '..response.headers['set-cookie']
+  else
+    request.headers.cookie = response.headers['set-cookie']
+  end
 
-  requests.request(method, request)
+  request.auth.nc_count = 0
 end
 
 function requests.post(url, ...)
@@ -145,17 +176,26 @@ function requests.get(url, ...)
   return requests.request("GET", thing)
 end
 
-g_val = 0
-
 function requests.request(method, request)
   assert(request.url, 'URL not specified')
+  request.method = method
   requests.check_url(request)
   request.data = request.data or '' -- TODO: Add functionality
   requests.create_header(request)
 
+  -- TODO: Find a better way to do this
+  if request.auth._type == 'digest' then
+    local response = make_request(request)
+    return use_digest(response, request)
+  else
+    return make_request(request)
+  end
+end
+
+function make_request(request)
   local response_body = {}
   local full_request = {
-    method = method,
+    method = request.method,
     url = request.url,
     headers = request.headers,
     source = ltn12.source.string(request.data),
@@ -167,13 +207,7 @@ function requests.request(method, request)
 
   ok, response.status_code, response.headers, response.status = requests.http_socket.request(full_request)
 
-  if response.status_code == 401 then
-    g_val = g_val + 1
-    assert(g_val < 2, inspect(response)..inspect(request))
-    requests.parse_digest_response_header(response.headers, method, request)
-  end
-
-  assert(ok, 'error in POST request: '..response.status_code)
+  assert(ok, 'error in '..request.method..' request: '..response.status_code)
   response.text = table.concat(response_body)
   
   return response
