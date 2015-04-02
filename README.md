@@ -13,11 +13,11 @@ Tests are written using [busted](http://olivinelabs.com/busted/ "Busted home pag
 
 Install `busted`:
 
-	luarocks install busted
+	$ luarocks install busted
 
 Run Tests:
 
-	busted -p _tests test
+	$ busted -p _tests tests
 
 Licensing
 ====
