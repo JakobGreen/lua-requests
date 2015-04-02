@@ -6,10 +6,17 @@ The same friendly python Requests interface for Lua!
 Under construction... Stay tuned.
 
 
+Dependancies
+====
+
+- [luasocket](http://w3.impa.br/~diego/software/luasocket/ "LuaSocket homepage")
+- [md5](https://github.com/kikito/md5.lua "md5 github")
+- [inspect](https://github.com/kikito/inspect.lua "inspect github")
+
 Tests
 ====
 
-Tests are written using [busted](http://olivinelabs.com/busted/ "Busted home page").
+Tests are located in the tests directory and are written using [busted](http://olivinelabs.com/busted/ "Busted home page").
 
 Install `busted`:
 
