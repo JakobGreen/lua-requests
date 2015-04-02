@@ -6,7 +6,7 @@ The same friendly python Requests interface for Lua!
 Under construction... Stay tuned.
 
 
-Dependancies
+Dependencies
 ====
 
 - [luasocket](http://w3.impa.br/~diego/software/luasocket/ "LuaSocket homepage")
