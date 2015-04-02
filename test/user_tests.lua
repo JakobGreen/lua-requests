@@ -1,6 +1,4 @@
-require('busted')
-
-local requests = require('requests')
+local requests = require('src/requests')
 
 describe("User level testing", function()
   describe("GET request", function()

@@ -1,5 +1,4 @@
-require('busted')
-requests = require('requests')
+requests = require('src/requests')
 
 
 describe("Params", function()
