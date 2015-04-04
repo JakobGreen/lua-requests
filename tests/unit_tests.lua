@@ -3,7 +3,7 @@ requests = require('src/requests')
 
 describe("Params", function()
 
-  it("Checks basic functionality", function ()
+  it("has basic functionality", function ()
     local url_output = requests.format_params("blah.com/dumb.cgi?", {action = 'stuff', run = 'true'})
     assert.are.same("blah.com/dumb.cgi?action=stuff&run=true", url_output)
 
@@ -17,7 +17,7 @@ describe("Params", function()
     assert.are.same("jake.com/work?good=42&action=do,some,stuff&bad=666", url_output)
   end)
 
-  it("Checks edge cases", function()
+  it("works with edge cases", function()
     local url_output = requests.format_params("blah.com/dumb.cgi?", {})
     assert.are.same("blah.com/dumb.cgi?", url_output)
 
@@ -27,6 +27,22 @@ describe("Params", function()
 
 end)
 
-describe("Digest authentication", function()
+describe("Headers", function()
+  it("add's the content length to headers", function()
+    local request = {
+      data = 'try'
+    }
 
+    requests.create_header(request)
+
+    assert.are.same(3, request.headers['Content-Length'])
+
+    request = {
+      data = ''
+    }
+
+    requests.create_header(request)
+
+    assert.are.same(0, request.headers['Content-Length'])
+  end)
 end)

@@ -3,6 +3,7 @@
 local http_socket = require('socket.http')
 local url_parser = require('socket.url')
 local ltn12 = require('ltn12')
+local json = require('dkjson')
 
 --TODO: Remove
 local inspect = require('inspect')
@@ -57,7 +58,7 @@ local function basic_auth_header(request)
 end
 
 -- Create digest authorization string for request header TODO: Could be better, but it should work
-local function digest_create_header_string(auth)
+function digest_create_header_string(auth)
   local authorization = ''
   authorization = 'Digest username="'..auth.user..'", realm="'..auth.realm..'", nonce="'..auth.nonce
   authorization = authorization..'", uri="'..auth.uri..'", qop='..auth.qop..', nc='..auth.nc
@@ -167,16 +168,44 @@ function parse_digest_response_header(response, request)
 end
 
 function requests.post(url, ...)
-  return requests.request("POST",{url = url, ...})
+  return requests.request("POST", url, ...)
 end
 
 function requests.get(url, ...)
-  local thing = ...
-  thing.url = url
-  return requests.request("GET", thing)
+  return requests.request("GET", url, ...)
 end
 
-function requests.request(method, request)
+function requests.delete(url, ...)
+  return requests.request("DELETE", url, ...)
+end
+
+function requests.patch(url, ...)
+  return requests.request("PATCH", url, ...)
+end
+
+function requests.put(url, ...)
+  return requests.request("PUT", url, ...)
+end
+
+function requests.options(url, ...)
+  return requests.request("OPTIONS", url, ...)
+end
+
+function requests.head(url, ...)
+  return requests.request("HEAD", url, ...)
+end
+
+function requests.trace(url, ...)
+  return requests.request("TRACE", url, ...)
+end
+
+function requests.path(url, ...)
+  return requests.request("PATCH", url, ...)
+end
+
+function requests.request(method, url, ...)
+  local request = ... or {}
+  request.url = url
   assert(request.url, 'URL not specified')
   request.method = method
   requests.check_url(request)
@@ -184,7 +213,7 @@ function requests.request(method, request)
   requests.create_header(request)
 
   -- TODO: Find a better way to do this
-  if request.auth._type == 'digest' then
+  if request.auth and request.auth._type == 'digest' then
     local response = make_request(request)
     return use_digest(response, request)
   else
@@ -209,6 +238,7 @@ function make_request(request)
 
   assert(ok, 'error in '..request.method..' request: '..response.status_code)
   response.text = table.concat(response_body)
+  response.json = function () return json.decode(response.text) end
   
   return response
 end
