@@ -84,28 +84,11 @@ describe("All requests test", function()
     end)
   end)
 
-  describe("TRACE request", function()
-    it("can make trace requests", function()
-      local url = 'http://httpbin.org/get'
-
-      local response = requests.trace(url)
-
-      print(inspect(response.headers))
-      print(response.text)
-
-      assert.are.same(200, response.status_code)
-    end)
-  end)
-
 end)
 
 describe("Authentication", function()
 
   describe("Digest", function()
-
-    it("should work with POST", function()
-
-    end)
 
     it("should work with GET", function()
       local url = 'http://httpbin.org/digest-auth/auth/user/passwd'
@@ -140,5 +123,17 @@ describe("Authentication", function()
       assert.are.same(200, response.status_code)
     end)
 
+  end)
+
+  describe("Basic", function()
+    
+    it("should work with GET", function()
+      local url = 'http://httpbin.org/basic-auth/user/passwd'
+      local response = requests.get(url, {auth=requests.HTTPBasicAuth('user', 'passwd')})
+      local json_data, _, err = response.json()
+
+      assert.are.same(200, response.status_code)
+      assert.are.same(true, json_data.authenticated)
+    end)
   end)
 end)

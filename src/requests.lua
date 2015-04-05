@@ -8,6 +8,7 @@ local json = require('dkjson')
 --TODO: Remove
 local inspect = require('inspect')
 local md5sum = require('md5') -- TODO: Make modular?
+local base64 = require('base64')
 
 local requests = {
   _DESCRIPTION = 'Http requests made simpler',
@@ -53,8 +54,9 @@ function requests.HTTPBasicAuth(user, password)
   return { _type = 'basic', user = user, password = password}
 end
 
-local function basic_auth_header(request)
-  request.header.Authorization = 'Basic '..request.auth.user..request.auth.password -- TODO: Encode this
+function basic_auth_header(request)
+  local encoded = base64.encode(request.auth.user..':'..request.auth.password)
+  request.headers.Authorization = 'Basic '..encoded
 end
 
 -- Create digest authorization string for request header TODO: Could be better, but it should work
