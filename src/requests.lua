@@ -201,10 +201,6 @@ function requests.trace(url, ...)
   return requests.request("TRACE", url, ...)
 end
 
-function requests.path(url, ...)
-  return requests.request("PATCH", url, ...)
-end
-
 function requests.request(method, url, ...)
   local request = ... or {}
   request.url = url

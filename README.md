@@ -5,6 +5,8 @@ The same friendly python Requests interface for Lua!
 
 Under construction... Stay tuned.
 
+All API documentation is on the wiki page.
+
 
 Dependencies
 ====
