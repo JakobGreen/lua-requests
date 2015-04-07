@@ -3,9 +3,7 @@ lua-requests
 
 The same friendly python Requests interface for Lua!
 
-Under construction... Stay tuned.
-
-All API documentation is on the wiki page.
+API documentation is on the [wiki](http://github.com/JakobGreen/lua-requests/wiki) page.
 
 
 Dependencies

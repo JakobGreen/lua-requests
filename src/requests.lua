@@ -17,7 +17,8 @@ local requests = {
 
 function requests.format_params(url, params) -- TODO: Clean
   if not params or next(params) == nil then return url end
-
+  
+  url = url..'?'
   for key, value in pairs(params) do
     if tostring(value) then
       url = url..tostring(key)..'='
