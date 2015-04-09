@@ -168,3 +168,24 @@ describe("XML", function ()
     assert.has_errors(function () return response.xml() end)
   end)
 end)
+
+describe("Redirects", function()
+  it("should work", function()
+    local url = 'http://httpbin.org/redirect-to?url=google.com'
+    local response = requests.get(url, {allow_redirects = true})
+    assert.are.same(200, response.status_code)
+
+    response = requests.get(url, {allow_redirects = false})
+    assert.are.same(302, response.status_code)
+  end)
+end)
+
+describe("Timeout", function()
+  it("should work", function()
+    local url = 'http://httpbin.org/delay/2'
+    assert.has.errors(function () return requests.get(url, {timeout = 1}) end)
+
+    local response = requests.get(url, {timeout = 3})
+    assert.are.same(200, response.status_code)
+  end)
+end)

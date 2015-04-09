@@ -208,14 +208,29 @@ function requests.trace(url, ...)
   return requests.request("TRACE", url, ...)
 end
 
-function requests.request(method, url, ...)
-  local request = ... or {}
-  request.url = url
-  assert(request.url, 'URL not specified')
-  request.method = method
+function check_timeout(timeout)
+  http_socket.TIMEOUT = timeout or 5
+end
+
+function check_redirect(allow_redirects)
+  if allow_redirects and type(allow_redirects) ~= "boolean" then
+    error("allow_redirects expects a boolean value. received type = "..type(allow_redirects))
+  end
+end
+
+function requests.parse_args(request)
   requests.check_url(request)
   requests.check_data(request)
   requests.create_header(request)
+  check_timeout(request.timeout)
+  check_redirect(request.allow_redirects)
+end
+
+function requests.request(method, url, ...)
+  local request = ... or {}
+  request.url = url
+  request.method = method
+  requests.parse_args(request)
 
   -- TODO: Find a better way to do this
   if request.auth and request.auth._type == 'digest' then
@@ -233,7 +248,9 @@ function make_request(request)
     url = request.url,
     headers = request.headers,
     source = ltn12.source.string(request.data),
-    sink = ltn12.sink.table(response_body)
+    sink = ltn12.sink.table(response_body),
+    redirect = request.allow_redirects,
+    proxy = request.proxy
   }
 
   local response = {}
