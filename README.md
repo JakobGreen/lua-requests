@@ -11,8 +11,9 @@ Dependencies
 
 - [luasocket](http://w3.impa.br/~diego/software/luasocket/ "LuaSocket homepage")
 - [md5](https://github.com/kikito/md5.lua "md5 github")
-- [inspect](https://github.com/kikito/inspect.lua "inspect github")
 - [lbase64](https://github.com/LuaDist/lbase64 "lbase64 github")
+- [lua-cjson](http://www.kyne.com.au/~mark/software/lua-cjson.php)
+- [xml](http://doc.lubyk.org/xml.html)
 
 Tests
 ====
