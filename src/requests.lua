@@ -3,10 +3,8 @@
 local http_socket = require('socket.http')
 local url_parser = require('socket.url')
 local ltn12 = require('ltn12')
-local json = require('dkjson')
-
---TODO: Remove
-local inspect = require('inspect')
+local json = require('cjson.safe')
+local xml = require('xml')
 local md5sum = require('md5') -- TODO: Make modular?
 local base64 = require('base64')
 
@@ -170,6 +168,14 @@ function parse_digest_response_header(response, request)
   request.auth.nc_count = 0
 end
 
+function requests.check_data(request)
+  request.data = request.data or ''
+
+  if type(request.data) == "table" then
+    request.data = json.encode(request.data)
+  end
+end
+
 function requests.post(url, ...)
   return requests.request("POST", url, ...)
 end
@@ -208,7 +214,7 @@ function requests.request(method, url, ...)
   assert(request.url, 'URL not specified')
   request.method = method
   requests.check_url(request)
-  request.data = request.data or '' -- TODO: Add functionality
+  requests.check_data(request)
   requests.create_header(request)
 
   -- TODO: Find a better way to do this
@@ -238,6 +244,7 @@ function make_request(request)
   assert(ok, 'error in '..request.method..' request: '..response.status_code)
   response.text = table.concat(response_body)
   response.json = function () return json.decode(response.text) end
+  response.xml = function () return xml.load(response.text) end
   
   return response
 end

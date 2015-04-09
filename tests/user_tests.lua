@@ -7,7 +7,7 @@ describe("All requests test", function()
       local url = 'http://httpbin.org/get'
 
       local response = requests.get(url)
-      local json_data, _, err = response.json()
+      local json_data, err = response.json()
       
       assert.are.same(200, response.status_code)
       assert.falsy(err)
@@ -16,10 +16,11 @@ describe("All requests test", function()
   end)
 
   describe("POST request", function()
+    it("can do basic post commands", function ()
       local url = 'http://httpbin.org/post'
 
       local response = requests.post(url, {data = 'blah'})
-      local json_data, _, err = response.json()
+      local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
@@ -27,12 +28,24 @@ describe("All requests test", function()
       assert.are.same('4', json_data.headers['Content-Length'])
 
       response = requests.post(url, {data = ''})
-      json_data, _, err = response.json()
+      json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
       assert.are.same('', json_data.data)
       assert.are.same('0', json_data.headers['Content-Length'])
+    end)
+
+    it("can send a json encoded table", function ()
+      local url = 'http://httpbin.org/post'
+      local data = { stuff = true, otherstuff = false }
+      local response = requests.post(url, {data = data})
+      local json_data = response.json()
+      
+      local json = require('cjson')
+      local output_data = json.encode(data)
+      assert.are.same(output_data, json_data.data)
+    end)
   end)
 
   describe("DELETE request", function()
@@ -40,7 +53,7 @@ describe("All requests test", function()
       local url = 'http://httpbin.org/delete'
 
       local response = requests.delete(url, {data = 'delete!'})
-      local json_data, _, err = response.json()
+      local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
@@ -53,7 +66,7 @@ describe("All requests test", function()
       local url = 'http://httpbin.org/put'
 
       local response = requests.put(url, {data = 'put'})
-      local json_data, _, err = response.json()
+      local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
@@ -130,10 +143,28 @@ describe("Authentication", function()
     it("should work with GET", function()
       local url = 'http://httpbin.org/basic-auth/user/passwd'
       local response = requests.get(url, {auth=requests.HTTPBasicAuth('user', 'passwd')})
-      local json_data, _, err = response.json()
+      local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
     end)
+  end)
+end)
+
+describe("XML", function ()
+  
+  it("should work with a basic xml", function ()
+    local url = 'http://httpbin.org/xml'
+    local response = requests.get(url)
+    local xml_body = response.xml()
+
+    assert.are.same(200, response.status_code)
+    assert.are.same("title", xml_body[1][1].xml)
+  end)
+
+  it("should fail with a non-xml response", function ()
+    local url = 'http://httpbin.org/get'
+    local response = requests.get(url)
+    assert.has_errors(function () return response.xml() end)
   end)
 end)
