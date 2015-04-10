@@ -147,6 +147,12 @@ describe("Authentication", function()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
+
+      response = requests.get{url=url, auth=requests.HTTPBasicAuth('user', 'passwd')}
+      json_data, err = response.json()
+
+      assert.are.same(200, response.status_code)
+      assert.are.same(true, json_data.authenticated)
     end)
   end)
 end)

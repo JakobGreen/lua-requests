@@ -176,36 +176,36 @@ function requests.check_data(request)
   end
 end
 
-function requests.post(url, ...)
-  return requests.request("POST", url, ...)
+function requests.post(url, args)
+  return requests.request("POST", url, args)
 end
 
-function requests.get(url, ...)
-  return requests.request("GET", url, ...)
+function requests.get(url, args)
+  return requests.request("GET", url, args)
 end
 
-function requests.delete(url, ...)
-  return requests.request("DELETE", url, ...)
+function requests.delete(url, args)
+  return requests.request("DELETE", url, args)
 end
 
-function requests.patch(url, ...)
-  return requests.request("PATCH", url, ...)
+function requests.patch(url, args)
+  return requests.request("PATCH", url, args)
 end
 
-function requests.put(url, ...)
-  return requests.request("PUT", url, ...)
+function requests.put(url, args)
+  return requests.request("PUT", url, args)
 end
 
-function requests.options(url, ...)
-  return requests.request("OPTIONS", url, ...)
+function requests.options(url, args)
+  return requests.request("OPTIONS", url, args)
 end
 
-function requests.head(url, ...)
-  return requests.request("HEAD", url, ...)
+function requests.head(url, args)
+  return requests.request("HEAD", url, args)
 end
 
-function requests.trace(url, ...)
-  return requests.request("TRACE", url, ...)
+function requests.trace(url, args)
+  return requests.request("TRACE", url, args)
 end
 
 function check_timeout(timeout)
@@ -226,9 +226,16 @@ function requests.parse_args(request)
   check_redirect(request.allow_redirects)
 end
 
-function requests.request(method, url, ...)
-  local request = ... or {}
-  request.url = url
+function requests.request(method, url, args)
+  local request
+
+  if type(url) == "table" then
+    request = url
+  else
+    request = args or {}
+    request.url = url
+  end
+
   request.method = method
   requests.parse_args(request)
 
