@@ -1,6 +1,7 @@
 local requests = require('src/requests')
 
 describe("Digest authentication", function()
+  local _requests = requests._private
   
   -- TODO: Add all functionality to this? 
   it("Should initialize table with data", function()
@@ -40,7 +41,7 @@ describe("Digest authentication", function()
       opaque = '0987654321',
     }
 
-    local auth = digest_create_header_string(auth_table)
+    local auth = _requests.digest_create_header_string(auth_table)
 
     local test_auth = 'Digest username="user", realm="user@domain.com", ' ..
       'nonce="123412341234", uri="/blah/blah/", qop=auth, nc=00000001, cnonce="654321", '..
@@ -60,7 +61,7 @@ describe("Digest authentication", function()
       response = '1234567890'
     }
 
-    auth = digest_create_header_string(auth_table)
+    auth = _requests.digest_create_header_string(auth_table)
 
     test_auth = 'Digest username="user", realm="user@domain.com", ' ..
       'nonce="123412341234", uri="/blah/blah/", qop=auth, nc=00000001, cnonce="654321", '..
