@@ -3,7 +3,22 @@ lua-requests
 
 The same friendly python Requests interface for Lua!
 
-API documentation is on the [wiki](http://github.com/JakobGreen/lua-requests/wiki) page.
+
+
+Usage
+====
+
+	> requests = require('requests')
+	> response = requests.get('http://httpbin.org/get')
+	> print(response.status_code)
+	200
+	>
+	> response = requests.post{url = 'http://httpbin.org/post', data='random data'}
+	> json_data = response.json()
+	> print(json_data.data)
+	random data
+
+The rest of the API documentation is on the [wiki](http://github.com/JakobGreen/lua-requests/wiki) page.
 
 
 Dependencies
