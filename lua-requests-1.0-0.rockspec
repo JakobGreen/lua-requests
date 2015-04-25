@@ -1,14 +1,14 @@
 package = "lua-requests"
-version = "0.2-1"
+version = "1.0-0"
 source = {
   url = "git://github.com/JakobGreen/lua-requests.git"
 }
 description = {
-  summary = "HTTP requests for Lua! Support for Basic Auth, Digest Auth",
+  summary = "HTTP requests made easy! Support for Basic Auth, Digest Auth. HTTP response parsing has never been easier!",
   detailed = [[Similar to Requests for python.
-    The goal of lua-requests is to make HTTP simple and easy.
+    The goal of lua-requests is to make HTTP simple and easy to use.
     Currently Basic Authentication and Digest Authentication are supported.
-    Checkout the wiki on the github page for more details.
+    Checkout the wiki on the github page for more details. Written in pure lua!
   ]],
   homepage = "http://github.com/JakobGreen/lua-requests",
   license = "MIT"
