@@ -8,7 +8,20 @@ describe("All requests test", function()
 
       local response = requests.get(url)
       local json_data, err = response.json()
-      
+
+      assert.are.same(200, response.status_code)
+      assert.falsy(err)
+      assert.are.same(url, json_data.url)
+    end)
+  end)
+
+  describe("GET request (secure)", function()
+    it("can make basic get requests with https", function()
+      local url = 'https://httpbin.org/get'
+
+      local response = requests.get(url)
+      local json_data, err = response.json()
+
       assert.are.same(200, response.status_code)
       assert.falsy(err)
       assert.are.same(url, json_data.url)
@@ -41,7 +54,7 @@ describe("All requests test", function()
       local data = { stuff = true, otherstuff = false }
       local response = requests.post(url, {data = data})
       local json_data = response.json()
-      
+
       local json = require('cjson')
       local output_data = json.encode(data)
       assert.are.same(output_data, json_data.data)
@@ -106,13 +119,13 @@ describe("Authentication", function()
     it("should work with GET", function()
       local url = 'http://httpbin.org/digest-auth/auth/user/passwd'
       local response = requests.get(url, {auth=requests.HTTPDigestAuth('user', 'passwd')})
-      
+
       assert.are.same(200, response.status_code)
       assert.are.same(1, response.auth.nc_count)
-      
+
       local response_text = response.text
       local nonce = response.auth.nonce
-      
+
       -- Should be able to reuse the previous authentication
       response = requests.get(url, {auth = response.auth, cookies = response.cookies })
 
@@ -139,7 +152,7 @@ describe("Authentication", function()
   end)
 
   describe("Basic", function()
-    
+
     it("should work with GET", function()
       local url = 'http://httpbin.org/basic-auth/user/passwd'
       local response = requests.get(url, {auth=requests.HTTPBasicAuth('user', 'passwd')})
@@ -158,7 +171,7 @@ describe("Authentication", function()
 end)
 
 describe("XML", function ()
-  
+
   it("should work with a basic xml", function ()
     local url = 'http://httpbin.org/xml'
     local response = requests.get(url)
