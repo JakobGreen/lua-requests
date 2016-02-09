@@ -1,6 +1,6 @@
 # lua-requests
 
-[![License](http://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
+[![License](http://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE.md)
 
 The same friendly python Requests interface for Lua!
 
