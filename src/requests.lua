@@ -99,7 +99,7 @@ function _requests.make_request(request)
 
   local response = {}
   local ok
-  local socket = string.find(full_request.url, '^https:') and https_socket or http_socket
+  local socket = string.find(full_request.url, '^https:') and not request.proxy and https_socket or http_socket
 
   ok, response.status_code, response.headers, response.status = socket.request(full_request)
 
