@@ -48,6 +48,8 @@ The same friendly python Requests interface for Lua!
 - [lua-cjson](http://www.kyne.com.au/~mark/software/lua-cjson.php)
 - [xml](http://doc.lubyk.org/xml.html)
 
+The HTTP backend can be swapped out for anything that has the same API as LuaSocket's `socket.http`. This is done by setting the value of `requests.http_socket`. Swapping the HTTPS backend can be done by swapping out `requests.https_socket`.
+
 #Tests
 
 Tests are located in the tests directory and are written using [busted](http://olivinelabs.com/busted/ "Busted home page").
