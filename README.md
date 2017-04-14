@@ -2,9 +2,9 @@
 
 [![License](http://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE.md)
 
-The same friendly python Requests interface for Lua!
+The same friendly Python Requests interface for Lua!
 
-#Basic Usage
+## Basic Usage
 
 	> requests = require('requests')
 	> response = requests.get('http://httpbin.org/get')
@@ -16,7 +16,8 @@ The same friendly python Requests interface for Lua!
 	> print(json_data.data)
 	random data
 
-# Contents
+## Contents
+
 [API](#api)
 + [Simple requests](#simple-requests)
 + [HTTPS](#https)
@@ -39,7 +40,7 @@ The same friendly python Requests interface for Lua!
 
 [License](#licensing)
 
-#Dependencies
+## Dependencies
 
 - [LuaSocket](http://w3.impa.br/~diego/software/luasocket/ "LuaSocket homepage")
 - [LuaSec](https://github.com/brunoos/luasec "LuaSec github")
@@ -50,7 +51,7 @@ The same friendly python Requests interface for Lua!
 
 The HTTP backend can be swapped out for anything that has the same API as LuaSocket's `socket.http`. This is done by setting the value of `requests.http_socket`. Swapping the HTTPS backend can be done by swapping out `requests.https_socket`.
 
-#Tests
+## Tests
 
 Tests are located in the tests directory and are written using [busted](http://olivinelabs.com/busted/ "Busted home page").
 
@@ -62,14 +63,14 @@ Run Tests:
 
 	$ busted -p _tests tests
 
-#Licensing
+## Licensing
 
 `lua-requests` is licensed under the MIT license. See LICENSE.md for details on the MIT license.
 
 
-##API
+## API
 
-###Simple requests
+### Simple requests
 Importing the lua-requests is quite simple.
 
     > requests = require('requests')
@@ -99,13 +100,13 @@ There is also a general request call. The first parameter is the method.
 
     > response = requests.request("GET", 'http://httpbin.org/get')
     
-###HTTPS
+### HTTPS
 
 Using HTTPS is as simple as changing the URL to be 'https' instead of 'http'
 
     > response = requests.get('https://httpbing.org/get')
 
-###Basic Response
+### Basic Response
 
 The http response contains all of the response data in different fields.
 
@@ -136,7 +137,7 @@ The response status code is contained in `response.status_code`
     > print(response.status_code)
     200
 
-###URL Parameters
+### URL Parameters
 
 It is common for URL's that need to have some sort of query string. 
 For example, `http://httpbin.org/response-headers?key1=val1&key2=val2`. 
@@ -154,7 +155,7 @@ For keys that contain a list of values just make the value into a table.
 	> print(response.url)
 	http://httpbin.org/response-headers?key1=val1&key2=val2,val3
 
-###Sending Data
+### Sending Data
 
 Sending data is possible with any command. Just pass the data you want to send into the data field of the second argument.
 
@@ -166,14 +167,14 @@ If a table is passed in to data it is automatically encoded as JSON.
 	> data = {Data = "JSON"}
 	> response = requests.post{url = 'http://httpbin.org/post', data = data}
 
-###Custom headers
+### Custom headers
 
 Custom headers can be added to any request method. Just pass a table into the headers field of the second argument.
 
 	> headers = {Content-Type = 'application/json'}
 	> response = requests.get{url = 'http://httpbin.org/headers', headers = headers}
 
-###Timeout
+### Timeout
 
 Timeout in seconds can be passed as a parameter. If the host has not responded in timeout seconds then through an error.
 
@@ -181,7 +182,7 @@ Timeout in seconds can be passed as a parameter. If the host has not responded i
 	> response = requests.get{url = url, timeout = 1}
 	requests.lua:261: error in GET request: timeout
 
-###Basic Authentication
+### Basic Authentication
 
 Basic authentication can be added to any request.
 
@@ -190,7 +191,7 @@ Basic authentication can be added to any request.
 	> print(response.status_code)
 	200 
 
-###Digest Authentication
+### Digest Authentication
 
 Digest authentication can be added to any request.
 
@@ -208,13 +209,13 @@ To continue using the same digest authentication just pass `response.auth` into 
 By reusing the `response.auth` you can save time by not needing to reauthenticate again.
 `response.cookies` contains cookies that the server requested to be set for authentication.
 
-###Cookies
+### Cookies
 
 Cookies can be added to any request by setting the `cookies` field.
 
 	> response = requests.get{url = 'http://httpbin.org/get', cookies = 'cookie!'}
 
-###JSON Response
+### JSON Response
 
 JSON response's can be parsed into a Lua table using `response.json()`. 
 JSON encoding and decoding is done with `lua-cjson`. 
@@ -224,7 +225,7 @@ JSON encoding and decoding is done with `lua-cjson`.
 	> print(json_body.args.stuff)
 	true	
 
-###XML Response
+### XML Response
 
 XML response's can be parsed into a Lua table using `response.xml()`.
 XML encoding and decoding is done with `xml` which is based on RapidXML.
@@ -237,13 +238,13 @@ XML encoding and decoding is done with `xml` which is based on RapidXML.
 The returned xml table can be tricky to parse. 
 I recommend using `inspect` to help the first time to help see the table structure.
 
-###Proxy
+### Proxy
 
 A proxy server can be added as an argument to a request.
 
 	> response = requests.get('http://httpbin.org/get', {proxy = '8.8.8.8:9001'})
 
-###Redirects
+### Redirects
 
 301 and 302 redirects are enabled by default for most requests. To disable redirects set `allow_redirects = false`.
 
