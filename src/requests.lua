@@ -67,6 +67,9 @@ function requests.request(method, url, args)
 
   if type(url) == "table" then
     request = url
+    if not request.url and request[1] then
+      request.url = table.remove(request, 1)
+    end
   else
     request = args or {}
     request.url = url

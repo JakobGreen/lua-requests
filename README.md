@@ -71,6 +71,7 @@ Run Tests:
 ## API
 
 ### Simple requests
+
 Importing the lua-requests is quite simple.
 
     > requests = require('requests')
@@ -92,7 +93,12 @@ Any request can be made with either a second argument or as a table.
 
 or
 
+    > response = requests.post{'http://httpbin.org/post', data = 'random data'}
+
+or
+
     > response = requests.post('http://httpbin.org/post', {data = 'random data'})
+
 
 NOTE: This documentation mostly uses two parameters instead of just one table because the single table feature was added later.
 
