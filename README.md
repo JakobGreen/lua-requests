@@ -11,7 +11,7 @@ The same friendly Python Requests interface for Lua!
 	> print(response.status_code)
 	200
 	>
-	> response = requests.post{url = 'http://httpbin.org/post', data='random data'}
+	> response = requests.post{'http://httpbin.org/post', data='random data'}
 	> json_data = response.json()
 	> print(json_data.data)
 	random data
@@ -150,14 +150,14 @@ For example, `http://httpbin.org/response-headers?key1=val1&key2=val2`.
 Adding parameters to a URL query is as simple as passing a table into the params field of the second argument.
 
 	> query_parameters = { key1 = 'val1', key2 = 'val2' }
-	> response = requests.get{url = 'http://httpbin.org/response-headers', params = query_parameters}
+	> response = requests.get{'http://httpbin.org/response-headers', params = query_parameters}
 	> print(response.url)
 	http://httpbin.org/response-headers?key1=val1&key2=val2
 
 For keys that contain a list of values just make the value into a table.
 
 	> query_parameters = { key1 = 'val2', key2 = {'val2', 'val3'}}
-	> response = requests.get{url = 'http://httpbin.org/response-headers', params = query_parameters}
+	> response = requests.get{'http://httpbin.org/response-headers', params = query_parameters}
 	> print(response.url)
 	http://httpbin.org/response-headers?key1=val1&key2=val2,val3
 
@@ -166,26 +166,26 @@ For keys that contain a list of values just make the value into a table.
 Sending data is possible with any command. Just pass the data you want to send into the data field of the second argument.
 
 	> data = "Example data"
-	> response = requests.post{url = 'http://httpbin.org/post', data = data}
+	> response = requests.post{'http://httpbin.org/post', data = data}
 
 If a table is passed in to data it is automatically encoded as JSON.
 
 	> data = {Data = "JSON"}
-	> response = requests.post{url = 'http://httpbin.org/post', data = data}
+	> response = requests.post{'http://httpbin.org/post', data = data}
 
 ### Custom headers
 
 Custom headers can be added to any request method. Just pass a table into the headers field of the second argument.
 
 	> headers = {Content-Type = 'application/json'}
-	> response = requests.get{url = 'http://httpbin.org/headers', headers = headers}
+	> response = requests.get{'http://httpbin.org/headers', headers = headers}
 
 ### Timeout
 
 Timeout in seconds can be passed as a parameter. If the host has not responded in timeout seconds then through an error.
 
 	> url = 'http://httpbin.org/delay/2'
-	> response = requests.get{url = url, timeout = 1}
+	> response = requests.get{url, timeout = 1}
 	requests.lua:261: error in GET request: timeout
 
 ### Basic Authentication
@@ -193,7 +193,7 @@ Timeout in seconds can be passed as a parameter. If the host has not responded i
 Basic authentication can be added to any request.
 
 	> auth = requests.HTTPBasicAuth('user', 'passwd')
-	> response = requests.get{url = 'http://httpbin.org/basic-auth/user/passwd', auth = auth}
+	> response = requests.get{'http://httpbin.org/basic-auth/user/passwd', auth = auth}
 	> print(response.status_code)
 	200 
 
@@ -202,13 +202,13 @@ Basic authentication can be added to any request.
 Digest authentication can be added to any request.
 
 	> auth = requests.HTTPDigestAuth('user', 'passwd')
-	> response = requests.get{url = 'http://httpbin.org/digest-auth/auth/user/passwd', auth = auth}
+	> response = requests.get{'http://httpbin.org/digest-auth/auth/user/passwd', auth = auth}
 	> print(response.status_code)
 	200 
 
 To continue using the same digest authentication just pass `response.auth` into the next request.
 
-	> response = requests.get{url = 'http://httpbin.org/digest-auth/auth/user/passwd', auth = response.auth}
+	> response = requests.get{'http://httpbin.org/digest-auth/auth/user/passwd', auth = response.auth}
 	> print(response.status_code)
 	200
 
@@ -219,14 +219,14 @@ By reusing the `response.auth` you can save time by not needing to reauthenticat
 
 Cookies can be added to any request by setting the `cookies` field.
 
-	> response = requests.get{url = 'http://httpbin.org/get', cookies = 'cookie!'}
+	> response = requests.get{'http://httpbin.org/get', cookies = 'cookie!'}
 
 ### JSON Response
 
 JSON response's can be parsed into a Lua table using `response.json()`. 
 JSON encoding and decoding is done with `lua-cjson`. 
 
-	> response = requests.get('http://httpbin.org/get', {params =  {stuff=true}})
+	> response = requests.get{'http://httpbin.org/get', params =  {stuff=true}}
 	> json_body, error = response.json()
 	> print(json_body.args.stuff)
 	true	
@@ -248,7 +248,7 @@ I recommend using `inspect` to help the first time to help see the table structu
 
 A proxy server can be added as an argument to a request.
 
-	> response = requests.get('http://httpbin.org/get', {proxy = '8.8.8.8:9001'})
+	> response = requests.get{'http://httpbin.org/get', proxy = '8.8.8.8:9001'}
 
 ### Redirects
 
