@@ -13,6 +13,17 @@ describe("All requests test", function()
       assert.falsy(err)
       assert.are.same(url, json_data.url)
     end)
+
+    it("can use first table parameter as url", function()
+      local url = 'http://httpbin.org/get'
+
+      local response = requests.get{url}
+      local json_data, err = response.json()
+
+      assert.are.same(200, response.status_code)
+      assert.falsy(err)
+      assert.are.same(url, json_data.url)
+    end)
   end)
 
   describe("GET request (secure)", function()
@@ -94,7 +105,9 @@ describe("All requests test", function()
       local response = requests.options(url)
 
       assert.are.same(200, response.status_code)
-      assert.are.same('HEAD, OPTIONS, GET', response.headers.allow)
+      assert.truthy(string.match(response.headers.allow, 'HEAD'))
+      assert.truthy(string.match(response.headers.allow, 'OPTIONS'))
+      assert.truthy(string.match(response.headers.allow, 'GET'))
     end)
   end)
 
@@ -118,7 +131,7 @@ describe("Authentication", function()
 
     it("should work with GET", function()
       local url = 'http://httpbin.org/digest-auth/auth/user/passwd'
-      local response = requests.get(url, {auth=requests.HTTPDigestAuth('user', 'passwd')})
+      local response = requests.get{url, auth=requests.HTTPDigestAuth('user', 'passwd')}
 
       assert.are.same(200, response.status_code)
       assert.are.same(1, response.auth.nc_count)
@@ -142,8 +155,8 @@ describe("Authentication", function()
       assert.are.same(response.auth.nonce, nonce)
       assert.are.same(response_text, response.text)
 
-      -- Without the cookies this should have to reauthenticate
-      response = requests.get(url, {auth = response.auth})
+      -- Should have to reauthenticate
+      response = requests.get{url, auth=requests.HTTPDigestAuth('user', 'passwd')}
 
       assert.are.same(1, response.auth.nc_count)
       assert.are.same(200, response.status_code)
