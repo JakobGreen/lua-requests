@@ -90,11 +90,19 @@ end
 --Makes a request
 function _requests.make_request(request)
   local response_body = {}
+
+  local source = ''
+  if request.data and request.data ~='' then
+    source = ltn12.source.string(request.data)
+  elseif request.json then
+    source = ltn12.source.string(request.json)
+  end
+
   local full_request = {
     method = request.method,
     url = request.url,
     headers = request.headers,
-    source = ltn12.source.string(request.data),
+    source = source,
     sink = ltn12.sink.table(response_body),
     redirect = request.allow_redirects,
     proxy = request.proxy
@@ -118,6 +126,7 @@ end
 function _requests.parse_args(request)
   _requests.check_url(request)
   _requests.check_data(request)
+  _requests.check_json(request)
   _requests.create_header(request)
   _requests.check_timeout(request.timeout)
   _requests.check_redirect(request.allow_redirects)
@@ -162,6 +171,11 @@ function _requests.create_header(request)
   request.headers = request.headers or {}
   request.headers['Content-Length'] = request.data:len()
 
+  if request.data then
+    request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  elseif request.json then
+    request.headers['Content-Type'] = 'application/json'
+  end
   if request.cookies then
     if request.headers.cookie then
       request.headers.cookie = request.headers.cookie..'; '..request.cookies
@@ -175,12 +189,29 @@ function _requests.create_header(request)
   end
 end
 
+function _requests.check_json(request)
+  request.json = request.json or ''
+  if type(request.json) == "table" and
+          (not request.data or request.data=='') then
+    request.json = json.encode(request.json)
+  end
+end
+
 --Makes sure that the data is in a format that can be sent
 function _requests.check_data(request)
+  local data =''
   request.data = request.data or ''
 
   if type(request.data) == "table" then
-    request.data = json.encode(request.data)
+    for key,value in pairs(request.data) do
+      if data ~= '' then
+        data = data .. "&"
+      end
+      data = data .. string.format("%s=%s", key, value)
+    end
+    if data ~= '' then
+      request.data = data
+    end
   end
 end
 
