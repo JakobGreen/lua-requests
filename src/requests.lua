@@ -92,17 +92,17 @@ function _requests.make_request(request)
   local response_body = {}
 
   local source = ''
-  if request.data and request.data ~='' then
-    source = ltn12.source.string(request.data)
-  elseif request.json then
-    source = ltn12.source.string(request.json)
+  if request.data ~='' then
+    source = request.data
+  elseif request.json ~='' then
+    source = request.json
   end
 
   local full_request = {
     method = request.method,
     url = request.url,
     headers = request.headers,
-    source = source,
+    source = ltn12.source.string(source),
     sink = ltn12.sink.table(response_body),
     redirect = request.allow_redirects,
     proxy = request.proxy
@@ -169,11 +169,15 @@ end
 -- Add to the HTTP header
 function _requests.create_header(request)
   request.headers = request.headers or {}
-  request.headers['Content-Length'] = request.data:len()
+  if request.data ~='' then
+    request.headers['Content-Length'] = request.data:len()
+  elseif request.json ~='' then
+    request.headers['Content-Length'] = request.json:len()
+  end
 
-  if request.data then
+  if request.data ~='' then
     request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  elseif request.json then
+  elseif request.json~='' then
     request.headers['Content-Type'] = 'application/json'
   end
   if request.cookies then
