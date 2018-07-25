@@ -177,7 +177,7 @@ If a table is passed in to data it is automatically encoded as JSON.
 
 Custom headers can be added to any request method. Just pass a table into the headers field of the second argument.
 
-	> headers = {Content-Type = 'application/json'}
+	> headers = {['Content-Type'] = 'application/json'}
 	> response = requests.get{'http://httpbin.org/headers', headers = headers}
 
 ### Timeout
