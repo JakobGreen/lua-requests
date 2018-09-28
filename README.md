@@ -168,10 +168,11 @@ Sending data is possible with any command. Just pass the data you want to send i
 	> data = "Example data"
 	> response = requests.post{'http://httpbin.org/post', data = data}
 
-If a table is passed in to data it is automatically encoded as JSON.
+If a table is passed in to data it is automaticaly converted to x-www-form-urlencoded. 
+For send data like json
 
-	> data = {Data = "JSON"}
-	> response = requests.post{'http://httpbin.org/post', data = data}
+	> json = {Data = "JSON"}
+	> response = requests.post{'http://httpbin.org/post', json = data}
 
 ### Custom headers
 
