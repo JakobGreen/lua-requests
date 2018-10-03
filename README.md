@@ -172,7 +172,7 @@ If a table is passed in to data it is automaticaly converted to x-www-form-urlen
 For send data like json
 
 	> json = {Data = "JSON"}
-	> response = requests.post{'http://httpbin.org/post', json = data}
+	> response = requests.post{'http://httpbin.org/post', json = json}
 
 ### Custom headers
 
