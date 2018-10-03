@@ -178,7 +178,8 @@ For send data like json
 
 Custom headers can be added to any request method. Just pass a table into the headers field of the second argument.
 
-	> headers = {Content-Type = 'application/json'}
+	> headers = {}
+	> headers['Content-Type'] = 'application/json'
 	> response = requests.get{'http://httpbin.org/headers', headers = headers}
 
 ### Timeout
