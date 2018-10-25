@@ -176,7 +176,8 @@ For send data like json
 	> response = requests.post{'http://httpbin.org/post', json = json}
 
 If you want to send data as multipart/form-data (with a file), you should pass data as a table to form field of the second argument.
-	> data = {
+
+    > data = {
     >	some_field = "some_value",
     >	attachment = {
     >		name = "attachment",
