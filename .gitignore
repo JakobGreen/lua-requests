@@ -1,2 +1,4 @@
 luacov*
 *.rock
+.vscode
+.history

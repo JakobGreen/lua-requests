@@ -28,6 +28,7 @@ The same friendly Python Requests interface for Lua!
 + [Timeout](#timeout)
 + [Basic Authentication](#basic-authentication)
 + [Digest Authentication](#digest-authentication)
++ [Bearer Authentication](#bearer-authentication)
 + [Cookies](#cookies)
 + [JSON Response](#json-response)
 + [XML Response](#xml-response)
@@ -105,7 +106,7 @@ NOTE: This documentation mostly uses two parameters instead of just one table be
 There is also a general request call. The first parameter is the method.
 
     > response = requests.request("GET", 'http://httpbin.org/get')
-    
+
 ### HTTPS
 
 Using HTTPS is as simple as changing the URL to be 'https' instead of 'http'
@@ -145,8 +146,8 @@ The response status code is contained in `response.status_code`
 
 ### URL Parameters
 
-It is common for URL's that need to have some sort of query string. 
-For example, `http://httpbin.org/response-headers?key1=val1&key2=val2`. 
+It is common for URL's that need to have some sort of query string.
+For example, `http://httpbin.org/response-headers?key1=val1&key2=val2`.
 Adding parameters to a URL query is as simple as passing a table into the params field of the second argument.
 
 	> query_parameters = { key1 = 'val1', key2 = 'val2' }
@@ -168,11 +169,23 @@ Sending data is possible with any command. Just pass the data you want to send i
 	> data = "Example data"
 	> response = requests.post{'http://httpbin.org/post', data = data}
 
-If a table is passed in to data it is automaticaly converted to x-www-form-urlencoded. 
+If a table is passed in to data it is automaticaly converted to x-www-form-urlencoded.
 For send data like json
 
 	> json = {Data = "JSON"}
 	> response = requests.post{'http://httpbin.org/post', json = json}
+
+If you want to send data as multipart/form-data (with a file), you should pass data as a table to form field of the second argument.
+	> data = {
+    >	some_field = "some_value",
+    >	attachment = {
+    >		name = "attachment",
+    >		filename = "avatar.jpg",
+    >		content_type = "image/jpeg",
+    >		data = file_content
+    >	}
+	> }
+	> response = requests.post{'http://httpbin.org/post', form = data}
 
 ### Custom headers
 
@@ -197,7 +210,7 @@ Basic authentication can be added to any request.
 	> auth = requests.HTTPBasicAuth('user', 'passwd')
 	> response = requests.get{'http://httpbin.org/basic-auth/user/passwd', auth = auth}
 	> print(response.status_code)
-	200 
+	200
 
 ### Digest Authentication
 
@@ -206,7 +219,7 @@ Digest authentication can be added to any request.
 	> auth = requests.HTTPDigestAuth('user', 'passwd')
 	> response = requests.get{'http://httpbin.org/digest-auth/auth/user/passwd', auth = auth}
 	> print(response.status_code)
-	200 
+	200
 
 To continue using the same digest authentication just pass `response.auth` into the next request.
 
@@ -217,6 +230,18 @@ To continue using the same digest authentication just pass `response.auth` into 
 By reusing the `response.auth` you can save time by not needing to reauthenticate again.
 `response.cookies` contains cookies that the server requested to be set for authentication.
 
+### Bearer Authentication
+
+Bearer authentication can be added to any request.
+
+	> auth = requests.HTTPBearerAuth('token')
+	> response = requests.get{'http://httpbin.org/bearer', auth = auth}
+	> print(response.status_code)
+	200
+
+You can also use Token authentication. It's like Bearer but token name is `Token`
+	> auth = requests.HTTPTokenAuth('token')
+
 ### Cookies
 
 Cookies can be added to any request by setting the `cookies` field.
@@ -225,13 +250,13 @@ Cookies can be added to any request by setting the `cookies` field.
 
 ### JSON Response
 
-JSON response's can be parsed into a Lua table using `response.json()`. 
-JSON encoding and decoding is done with `lua-cjson`. 
+JSON response's can be parsed into a Lua table using `response.json()`.
+JSON encoding and decoding is done with `lua-cjson`.
 
 	> response = requests.get{'http://httpbin.org/get', params =  {stuff=true}}
 	> json_body, error = response.json()
 	> print(json_body.args.stuff)
-	true	
+	true
 
 ### XML Response
 
@@ -243,7 +268,7 @@ XML encoding and decoding is done with `xml` which is based on RapidXML.
 	> print(xml_body[1][1][1])
 	Wake up to WonderWidgets!
 
-The returned xml table can be tricky to parse. 
+The returned xml table can be tricky to parse.
 I recommend using `inspect` to help the first time to help see the table structure.
 
 ### Proxy
