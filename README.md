@@ -48,7 +48,7 @@ The same friendly Python Requests interface for Lua!
 - [md5](https://github.com/kikito/md5.lua "md5 github")
 - [lbase64](https://github.com/LuaDist/lbase64 "lbase64 github")
 - [lua-cjson](http://www.kyne.com.au/~mark/software/lua-cjson.php)
-- [xml](http://doc.lubyk.org/xml.html)
+- [xml](https://lubyk.github.io/lubyk/xml.html)
 
 The HTTP backend can be swapped out for anything that has the same API as LuaSocket's `socket.http`. This is done by setting the value of `requests.http_socket`. Swapping the HTTPS backend can be done by swapping out `requests.https_socket`.
 
@@ -192,8 +192,8 @@ If you want to send data as multipart/form-data (with a file), you should pass d
 
 Custom headers can be added to any request method. Just pass a table into the headers field of the second argument.
 
-	> headers = {}
-	> headers['Content-Type'] = 'application/json'
+
+	> headers = {['Content-Type'] = 'application/json'}
 	> response = requests.get{'http://httpbin.org/headers', headers = headers}
 
 ### Timeout
