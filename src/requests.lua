@@ -205,8 +205,7 @@ end
 
 -- Create digest authorization string for request header TODO: Could be better, but it should work
 function _requests.digest_create_header_string(auth)
-  local authorization = ''
-  authorization = 'Digest username="'..auth.user..'", realm="'..auth.realm..'", nonce="'..auth.nonce
+  local authorization = 'Digest username="'..auth.user..'", realm="'..auth.realm..'", nonce="'..auth.nonce
   authorization = authorization..'", uri="'..auth.uri..'", qop='..auth.qop..', nc='..auth.nc
   authorization = authorization..', cnonce="'..auth.cnonce..'", response="'..auth.response..'"'
 

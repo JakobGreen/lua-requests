@@ -2,8 +2,8 @@ local requests = require('src/requests')
 
 describe("Digest authentication", function()
   local _requests = requests._private
-  
-  -- TODO: Add all functionality to this? 
+
+  -- TODO: Add all functionality to this?
   it("Should initialize table with data", function()
     local auth = requests.HTTPDigestAuth('jake', 'green')
     local test_auth = {

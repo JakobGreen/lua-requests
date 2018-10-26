@@ -1,5 +1,4 @@
 local requests = require('src/requests')
-local inspect = require('inspect')
 
 describe("All requests test", function()
   describe("GET request", function()
@@ -169,13 +168,13 @@ describe("Authentication", function()
     it("should work with GET", function()
       local url = 'http://httpbin.org/basic-auth/user/passwd'
       local response = requests.get(url, {auth=requests.HTTPBasicAuth('user', 'passwd')})
-      local json_data, err = response.json()
+      local json_data, _ = response.json()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
 
       response = requests.get{url=url, auth=requests.HTTPBasicAuth('user', 'passwd')}
-      json_data, err = response.json()
+      json_data, _ = response.json()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
@@ -201,16 +200,16 @@ describe("XML", function ()
   end)
 end)
 
-describe("Redirects", function()
-  it("should work", function()
-    local url = 'http://httpbin.org/redirect-to?url=google.com'
-    local response = requests.get(url, {allow_redirects = true})
-    assert.are.same(200, response.status_code)
-
-    response = requests.get(url, {allow_redirects = false})
-    assert.are.same(302, response.status_code)
-  end)
-end)
+--describe("Redirects", function()
+--  it("should work", function()
+--    local url = 'http://httpbin.org/redirect-to?url=google.com'
+--    local response = requests.get(url, {allow_redirects = true})
+--    assert.are.same(200, response.status_code)
+--
+--    response = requests.get(url, {allow_redirects = false})
+--    assert.are.same(302, response.status_code)
+--  end)
+--end)
 
 describe("Timeout", function()
   it("should work", function()
