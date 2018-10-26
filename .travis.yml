@@ -19,6 +19,7 @@ install:
   - luarocks install busted
   - luarocks install luacov
   - luarocks install luacov-coveralls
+  - luarocks build --only-deps rocks/dev.rockspec
 
 script:
   - luacheck --std max+busted src test
