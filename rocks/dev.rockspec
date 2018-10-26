@@ -1,5 +1,5 @@
 package = "lua-requests"
-version = "1.21"
+version = "1.2-1"
 source = {
   url = "git://github.com/JakobGreen/lua-requests.git"
 }
