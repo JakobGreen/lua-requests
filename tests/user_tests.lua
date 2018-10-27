@@ -6,7 +6,7 @@ describe("All requests test", function()
       local url = 'http://localhost:8080/get'
 
       local response = requests.get(url)
-      local json_data, err = response.json()
+      local _, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
@@ -16,7 +16,7 @@ describe("All requests test", function()
       local url = 'http://localhost:8080/get'
 
       local response = requests.get{url}
-      local json_data, err = response.json()
+      local _, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
