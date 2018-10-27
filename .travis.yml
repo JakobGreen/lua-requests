@@ -10,7 +10,7 @@ env:
 #  - LUA="lua=5.3"
 
 before_install:
-  - pip install hererocks
+  - pip install hererocks gunicorn httpbin
   - hererocks lua_install -r^ --$LUA
   - export PATH=$PATH:$PWD/lua_install/bin # Add directory with all installed binaries to PATH
 
@@ -23,7 +23,7 @@ install:
 
 script:
   - luacheck --std max+busted src tests
-  - busted --verbose --coverage -p _tests tests
+  - travis/run_tests.sh
 
 after_success:
   - luacov-coveralls --exclude $TRAVIS_BUILD_DIR/lua_install
