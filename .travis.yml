@@ -26,4 +26,4 @@ script:
   - travis/run_tests.sh
 
 after_success:
-  - luacov-coveralls --exclude $TRAVIS_BUILD_DIR/lua_install
+  - luacov-coveralls --exclude lua_install
