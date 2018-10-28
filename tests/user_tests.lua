@@ -1,34 +1,31 @@
 local requests = require('src/requests')
-local inspect = require('inspect')
 
 describe("All requests test", function()
   describe("GET request", function()
     it("can make basic get requests", function()
-      local url = 'http://httpbin.org/get'
+      local url = 'http://localhost:8080/get'
 
       local response = requests.get(url)
-      local json_data, err = response.json()
+      local _, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
-      assert.are.same(url, json_data.url)
     end)
 
     it("can use first table parameter as url", function()
-      local url = 'http://httpbin.org/get'
+      local url = 'http://localhost:8080/get'
 
       local response = requests.get{url}
-      local json_data, err = response.json()
+      local _, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
-      assert.are.same(url, json_data.url)
     end)
   end)
 
-  describe("GET request (secure)", function()
+  describe("GET request #secure", function()
     it("can make basic get requests with https", function()
-      local url = 'https://httpbin.org/get'
+      local url = 'https://localhost:8080/get'
 
       local response = requests.get(url)
       local json_data, err = response.json()
@@ -41,7 +38,7 @@ describe("All requests test", function()
 
   describe("POST request", function()
     it("can do basic post commands", function ()
-      local url = 'http://httpbin.org/post'
+      local url = 'http://localhost:8080/post'
 
       local response = requests.post(url, {data = 'blah'})
       local json_data, err = response.json()
@@ -61,7 +58,7 @@ describe("All requests test", function()
     end)
 
     it("can send a json encoded table", function ()
-      local url = 'http://httpbin.org/post'
+      local url = 'http://localhost:8080/post'
       local data = { stuff = true, otherstuff = false }
       local response = requests.post(url, {data = data})
       local json_data = response.json()
@@ -74,7 +71,7 @@ describe("All requests test", function()
 
   describe("DELETE request", function()
     it("can make basic delete requests", function()
-      local url = 'http://httpbin.org/delete'
+      local url = 'http://localhost:8080/delete'
 
       local response = requests.delete(url, {data = 'delete!'})
       local json_data, err = response.json()
@@ -87,7 +84,7 @@ describe("All requests test", function()
 
   describe("PUT request", function()
     it("can make basic put requests", function()
-      local url = 'http://httpbin.org/put'
+      local url = 'http://localhost:8080/put'
 
       local response = requests.put(url, {data = 'put'})
       local json_data, err = response.json()
@@ -100,7 +97,7 @@ describe("All requests test", function()
 
   describe("OPTIONS request", function()
     it("can make options requests", function()
-      local url = 'http://httpbin.org/get'
+      local url = 'http://localhost:8080/get'
 
       local response = requests.options(url)
 
@@ -113,7 +110,7 @@ describe("All requests test", function()
 
   describe("HEAD request", function()
     it("can make head requests", function()
-      local url = 'http://httpbin.org/get'
+      local url = 'http://localhost:8080/get'
 
       local response = requests.head(url)
 
@@ -130,7 +127,7 @@ describe("Authentication", function()
   describe("Digest", function()
 
     it("should work with GET", function()
-      local url = 'http://httpbin.org/digest-auth/auth/user/passwd'
+      local url = 'http://localhost:8080/digest-auth/auth/user/passwd'
       local response = requests.get{url, auth=requests.HTTPDigestAuth('user', 'passwd')}
 
       assert.are.same(200, response.status_code)
@@ -167,15 +164,15 @@ describe("Authentication", function()
   describe("Basic", function()
 
     it("should work with GET", function()
-      local url = 'http://httpbin.org/basic-auth/user/passwd'
+      local url = 'http://localhost:8080/basic-auth/user/passwd'
       local response = requests.get(url, {auth=requests.HTTPBasicAuth('user', 'passwd')})
-      local json_data, err = response.json()
+      local json_data, _ = response.json()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
 
       response = requests.get{url=url, auth=requests.HTTPBasicAuth('user', 'passwd')}
-      json_data, err = response.json()
+      json_data, _ = response.json()
 
       assert.are.same(200, response.status_code)
       assert.are.same(true, json_data.authenticated)
@@ -186,7 +183,7 @@ end)
 describe("XML", function ()
 
   it("should work with a basic xml", function ()
-    local url = 'http://httpbin.org/xml'
+    local url = 'http://localhost:8080/xml'
     local response = requests.get(url)
     local xml_body = response.xml()
 
@@ -195,29 +192,29 @@ describe("XML", function ()
   end)
 
   it("should fail with a non-xml response", function ()
-    local url = 'http://httpbin.org/get'
+    local url = 'http://localhost:8080/get'
     local response = requests.get(url)
     assert.has_errors(function () return response.xml() end)
   end)
 end)
 
-describe("Redirects", function()
-  it("should work", function()
-    local url = 'http://httpbin.org/redirect-to?url=google.com'
-    local response = requests.get(url, {allow_redirects = true})
-    assert.are.same(200, response.status_code)
-
-    response = requests.get(url, {allow_redirects = false})
-    assert.are.same(302, response.status_code)
-  end)
-end)
+--describe("Redirects", function()
+--  it("should work", function()
+--    local url = 'http://localhost:8080/redirect-to?url=google.com'
+--    local response = requests.get(url, {allow_redirects = true})
+--    assert.are.same(200, response.status_code)
+--
+--    response = requests.get(url, {allow_redirects = false})
+--    assert.are.same(302, response.status_code)
+--  end)
+--end)
 
 describe("Timeout", function()
   it("should work", function()
-    local url = 'http://httpbin.org/delay/2'
+    local url = 'http://localhost:8080/delay/2'
     assert.has.errors(function () return requests.get(url, {timeout = 1}) end)
 
-    local response = requests.get(url, {timeout = 3})
+    local response = requests.get(url, {timeout = 4})
     assert.are.same(200, response.status_code)
   end)
 end)

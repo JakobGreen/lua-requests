@@ -1,7 +1,7 @@
 package = "lua-requests"
 version = "1.2-1"
 source = {
-  url = "git://github.com/norguhtar/lua-requests"
+  url = "git://github.com/JakobGreen/lua-requests.git"
 }
 description = {
   summary = "HTTP requests made easy! Support for HTTPS, Basic Auth, Digest Auth. HTTP response parsing has never been easier!",

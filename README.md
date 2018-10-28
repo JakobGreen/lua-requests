@@ -1,6 +1,8 @@
 # lua-requests
 
 [![License](http://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE.md)
+[![Coverage Status](https://coveralls.io/repos/github/JakobGreen/lua-requests/badge.svg?branch=master)](https://coveralls.io/github/JakobGreen/lua-requests?branch=master)
+[![Build Status](https://travis-ci.org/JakobGreen/lua-requests.svg?branch=master)](https://travis-ci.org/JakobGreen/lua-requests)
 
 The same friendly Python Requests interface for Lua!
 
