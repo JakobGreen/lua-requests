@@ -1,4 +1,5 @@
 local requests = require('src/requests')
+local inspect = require('inspect')
 
 describe("All requests test", function()
   describe("GET request", function()
@@ -40,27 +41,29 @@ describe("All requests test", function()
     it("can do basic post commands", function ()
       local url = 'http://localhost:8080/post'
 
-      local response = requests.post(url, {data = 'blah'})
+      local response = requests.post{url, data = "blah"}
       local json_data, err = response.json()
+
+      print("Output = "..inspect(json_data))
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
-      assert.are.same('blah', json_data.data)
+      assert.are.same("blah", json_data.data)
       assert.are.same('4', json_data.headers['Content-Length'])
 
-      response = requests.post(url, {data = ''})
+      response = requests.post{url, data = ''}
       json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
       assert.falsy(err)
       assert.are.same('', json_data.data)
-      assert.are.same('0', json_data.headers['Content-Length'])
+      assert.is_nil(json_data.headers['Content-Length'])
     end)
 
     it("can send a json encoded table", function ()
       local url = 'http://localhost:8080/post'
       local data = { stuff = true, otherstuff = false }
-      local response = requests.post(url, {data = data})
+      local response = requests.post{url, json = data}
       local json_data = response.json()
 
       local json = require('cjson')
@@ -73,7 +76,7 @@ describe("All requests test", function()
     it("can make basic delete requests", function()
       local url = 'http://localhost:8080/delete'
 
-      local response = requests.delete(url, {data = 'delete!'})
+      local response = requests.delete{url, data = 'delete!'}
       local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)
@@ -86,7 +89,7 @@ describe("All requests test", function()
     it("can make basic put requests", function()
       local url = 'http://localhost:8080/put'
 
-      local response = requests.put(url, {data = 'put'})
+      local response = requests.put{url, data = 'put'}
       local json_data, err = response.json()
 
       assert.are.same(200, response.status_code)

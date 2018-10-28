@@ -100,15 +100,7 @@ end
 --Makes a request
 function _requests.make_request(request)
 	local response_body = {}
-
-	local source = ""
-	if request.data ~= "" then
-		source = request.data
-	elseif request.json ~= "" then
-		source = request.json
-	elseif request.form ~= "" then
-		source = request.form
-	end
+	local source = request.source or ""
 
 	local full_request = {
 		method   = request.method,
@@ -142,8 +134,6 @@ end
 function _requests.parse_args(request)
 	_requests.check_url(request)
 	_requests.check_data(request)
-	_requests.check_json(request)
-	_requests.check_form(request)
 	_requests.create_header(request)
 	_requests.check_timeout(request.timeout)
 	_requests.check_redirect(request.allow_redirects)
@@ -189,17 +179,6 @@ end
 function _requests.create_header(request)
 	request.headers = request.headers or {}
 
-	if request.data ~= "" then
-		request.headers["Content-Length"] = request.data:len()
-		request.headers["Content-Type"]   = "application/x-www-form-urlencoded"
-	elseif request.json ~= "" then
-		request.headers["Content-Length"] = request.json:len()
-		request.headers["Content-Type"]   = "application/json"
-	elseif request.form ~= "" then
-		request.headers["Content-Length"] = request.form:len()
-		request.headers["Content-Type"]   = _requests.format("multipart/form-data; boundary=%s", request.boundary)
-	end
-
 	if request.cookies then
 		if request.headers.cookie then
 			request.headers.cookie = request.headers.cookie .. "; " .. request.cookies
@@ -213,48 +192,61 @@ function _requests.create_header(request)
 	end
 end
 
-function _requests.check_json(request)
-	request.json = request.json or ""
-	if (
-		type(request.json) == "table"
-		and (not request.data or request.data == "")
-		and (not request.form or request.form == "")
-	) then
-		request.json = json.encode(request.json)
-	end
-end
-
-function _requests.check_form(request)
-	request.form = request.form or ""
-	if (
-		type(request.form) == "table"
-		and (not request.data or request.data == "")
-		and (not request.json or request.json == "")
-	) then
-		request.form, request.boundary = _requests.encode_form_data(request.form)
-	end
-end
-
---Makes sure that the data is in a format that can be sent
 function _requests.check_data(request)
-	local data = ""
-	request.data = request.data or ""
+	request.headers = request.headers or {}
 
-	if (
-		type(request.data) == "table"
-		and (not request.json or request.json == "")
-		and (not request.form or request.form == "")
-	) then
-		for key, value in pairs(request.data) do
-			if data ~= "" then
-				data = data .. "&"
-			end
-			data = data .. string.format("%s=%s", key, value)
-		end
-		if data ~= "" then
-			request.data = data
-		end
-	end
+  local sources = {json = _requests.add_json, data = _requests.add_data, form = _requests.add_form}
+  local found = false
+  for key, fn in pairs(sources) do
+    if request[key] and request[key] ~= "" then
+      if found == true then
+        error("Only expected one data field, but received multiple.")
+      end
+      fn(request)
+      found = true
+    end
+  end
+end
+
+function _requests.add_json(request)
+  if type(request.json) ~= "table" then
+    error("JSON data should be a table")
+  end
+  request.source =  json.encode(request.json)
+  request.headers["Content-Length"] = request.source:len()
+  request.headers["Content-Type"]   = "application/json"
+end
+
+function _requests.add_data(request)
+  local data = ""
+  if type(request.data) == "table" then
+    for key, value in pairs(request.data) do
+      if data ~= "" then
+        data = data .. "&"
+      end
+      data = data .. string.format("%s=%s", key, value)
+    end
+  else
+    data = request.data
+  end
+  if data ~= "" then
+    request.source = data
+		request.headers["Content-Length"] = data:len()
+    if type(request.data) == "table" then
+      request.headers["Content-Type"] = "application/x-www-form-urlencoded"
+    else
+      if not request.headers["Content-Type"] then
+        request.headers["Content-Type"] = "text/plain"
+      end
+    end
+  end
+end
+
+function _requests.add_form(request)
+  local boundary
+  request.source, boundary = _requests.encode_form_data(request.form)
+  request.headers["Content-Length"] = request.source:len()
+  request.headers["Content-Type"]   = _requests.format("multipart/form-data; boundary=%s", boundary)
 end
 
 --Set the timeout

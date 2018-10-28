@@ -33,7 +33,7 @@ describe("Headers", function()
       data = 'try'
     }
 
-    _requests.create_header(request)
+    _requests.check_data(request)
 
     assert.are.same(3, request.headers['Content-Length'])
 
@@ -41,8 +41,8 @@ describe("Headers", function()
       data = ''
     }
 
-    _requests.create_header(request)
+    _requests.check_data(request)
 
-    assert.are.same(0, request.headers['Content-Length'])
+    assert.is_nil(request.headers['Content-Length'])
   end)
 end)
