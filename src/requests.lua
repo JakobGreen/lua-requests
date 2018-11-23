@@ -5,7 +5,7 @@ local https_socket = require('ssl.https')
 local url_parser = require('socket.url')
 local ltn12 = require('ltn12')
 local json = require('cjson.safe')
-local xml = require('xml')
+--local xml = require('xml')
 local md5sum = require('md5') -- TODO: Make modular?
 local base64 = require('base64')
 
@@ -109,7 +109,7 @@ function _requests.make_request(request)
   assert(ok, 'error in '..request.method..' request: '..response.status_code)
   response.text = table.concat(response_body)
   response.json = function () return json.decode(response.text) end
-  response.xml = function () return xml.load(response.text) end
+  --response.xml = function () return xml.load(response.text) end
 
   return response
 end

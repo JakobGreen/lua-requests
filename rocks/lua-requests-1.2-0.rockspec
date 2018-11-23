@@ -19,7 +19,6 @@ dependencies = {
   "luasocket",
   "md5",
   "lua-cjson",
-  "xml",
   "luasec >= 0.5.1"
 }
 build = {
