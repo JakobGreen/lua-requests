@@ -15,7 +15,6 @@ description = {
 }
 dependencies = {
   "lua >= 5.1",
-  "lbase64",
   "luasocket",
   "md5",
   "lua-cjson == 2.1.0-1",

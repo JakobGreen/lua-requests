@@ -7,7 +7,7 @@ local ltn12 = require('ltn12')
 local json = require('cjson.safe')
 local xml = require('xml')
 local md5sum = require('md5') -- TODO: Make modular?
-local base64 = require('base64')
+local mime = require('mime')
 
 local requests = {
   _DESCRIPTION = 'Http requests made simpler',
@@ -199,7 +199,7 @@ end
 
 --Create the Authorization header for Basic Auth
 function _requests.basic_auth_header(request)
-  local encoded = base64.encode(request.auth.user..':'..request.auth.password)
+  local encoded = mime.b64(request.auth.user..':'..request.auth.password)
   request.headers.Authorization = 'Basic '..encoded
 end
 
