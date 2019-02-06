@@ -11,9 +11,13 @@ sleep 2
 
 # Run tests
 busted --verbose --coverage --exclude-tags=secure -p _tests tests
+code=$?
 
 # Kill httpbin
 kill $pid
 
 # Wait for httpbin to die
 while kill -0 $pid 2>/dev/null; do sleep 1; done;
+
+# Use busted exit code as final exit code
+exit $code
