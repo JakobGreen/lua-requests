@@ -1,7 +1,7 @@
 local requests = require('src/requests')
 local say = require("say")
 
-local function is_any(state, arguments)
+local function is_any(_, arguments)
   if not type(arguments[1]) == "table" or #arguments ~= 2 then
     return false
   end
@@ -36,7 +36,10 @@ describe("Params", function()
     assert.is_any(possible, url_output)
 
     url_output = _requests.format_params("jake.com/work", {action = {'do','some','stuff'}, good = 42, bad = '666'})
-    possible = {"jake.com/work?good=42&action=do,some,stuff&bad=666", "jake.com/work?bad=666&good=42&action=do,some,stuff"}
+    possible = {
+      "jake.com/work?good=42&action=do,some,stuff&bad=666",
+      "jake.com/work?bad=666&good=42&action=do,some,stuff"
+    }
     assert.is_any(possible, url_output)
   end)
 
