@@ -94,11 +94,13 @@ function _requests.make_request(request)
     method = request.method,
     url = request.url,
     headers = request.headers,
-    source = ltn12.source.string(request.data),
     sink = ltn12.sink.table(response_body),
     redirect = request.allow_redirects,
     proxy = request.proxy
   }
+  if request.data then
+    full_request.source = ltn12.source.string(request.data)
+  end
 
   local response = {}
   local ok
@@ -160,7 +162,9 @@ end
 -- Add to the HTTP header
 function _requests.create_header(request)
   request.headers = request.headers or {}
-  request.headers['Content-Length'] = request.data:len()
+  if request.data then
+    request.headers['Content-Length'] = request.data:len()
+  end
 
   if request.cookies then
     if request.headers.cookie then
@@ -177,10 +181,10 @@ end
 
 --Makes sure that the data is in a format that can be sent
 function _requests.check_data(request)
-  request.data = request.data or ''
-
   if type(request.data) == "table" then
     request.data = json.encode(request.data)
+  elseif request.data then
+    request.data = tostring(request.data)
   end
 end
 
