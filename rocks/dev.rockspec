@@ -19,7 +19,7 @@ dependencies = {
   "md5",
   "lua-cjson == 2.1.0-1",
   "xml",
-  "luasec >= 0.5.1"
+  "luasec >= 0.5.1, < 0.8-1"
 }
 build = {
   type = "builtin",
