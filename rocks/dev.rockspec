@@ -17,7 +17,7 @@ dependencies = {
   "lua >= 5.1",
   "luasocket",
   "md5",
-  "lua-cjson == 2.1.0-1",
+  "lua-cjson",
   "xml",
   "luasec >= 0.5.1, < 0.8-1"
 }
