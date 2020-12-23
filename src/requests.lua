@@ -1,7 +1,5 @@
 -- Lua Requests library for http ease
 
-local http_socket = require('socket.http')
-local https_socket = require('ssl.https')
 local url_parser = require('socket.url')
 local ltn12 = require('ltn12')
 local json = require('cjson.safe')
@@ -75,6 +73,9 @@ function requests.request(method, url, args)
     request.url = url
   end
 
+  requests.http_socket = requests.http_socket or require('socket.http')
+  requests.https_socket = requests.https_socket or require('ssl.https')
+  
   request.method = method
   _requests.parse_args(request)
 
@@ -104,7 +105,7 @@ function _requests.make_request(request)
 
   local response = {}
   local ok
-  local socket = string.find(full_request.url, '^https:') and not request.proxy and https_socket or http_socket
+  local socket = string.find(full_request.url, '^https:') and not request.proxy and requests.http_socket or requests.https_socket
 
   ok, response.status_code, response.headers, response.status = socket.request(full_request)
 
@@ -190,8 +191,8 @@ end
 
 --Set the timeout
 function _requests.check_timeout(timeout)
-  http_socket.TIMEOUT = timeout or 5
-  https_socket.TIMEOUT = timeout or 5
+  requests.http_socket.TIMEOUT = timeout or 5
+  requests.https_socket.TIMEOUT = timeout or 5
 end
 
 --Checks is allow_redirects parameter is set correctly
